@@ -32,7 +32,7 @@ Watermark Pro 是一个基于 Python 和 Tkinter 开发的桌面水印工具，�
 本项目为纯 Python 脚本，无需额外构建步骤。如需打包为可执行文件，可使用 PyInstaller：
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --windowed watermark.py
+pyinstaller --onefile --clean --noconsole --name remove_watermark_windows --specpath . watermark.py
 ```
 
 ## 关键特性

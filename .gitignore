@@ -9,3 +9,6 @@ scratch/
 *.db
 venv/**
 .venv/**
+dist/
+build/
+*.spec
