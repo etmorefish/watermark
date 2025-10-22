@@ -11,7 +11,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
         include:
           - os: macos-latest
             python-version: '3.11'
@@ -25,15 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python (Windows workaround)
-      if: matrix.os == 'windows-latest'
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11.x'  
-        architecture: ${{ matrix.architecture }}
-
-    - name: Set up Python (macOS)
-      if: matrix.os == 'macos-latest'
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
@@ -48,13 +39,16 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
 
-    - name: Build executable
+    - name: Build executable (macOS)
+      if: matrix.os == 'macos-latest'
       run: |
-        if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-          pyinstaller --onefile --name ${{ matrix.output-name }} --add-data "SimHei.ttf:." watermark.py
-        else
-          pyinstaller --onefile --name ${{ matrix.output-name }} --add-data "SimHei.ttf;." watermark.py
-        fi
+        pyinstaller --onefile --name ${{ matrix.output-name }} --add-data "SimHei.ttf:." watermark.py
+
+    - name: Build executable (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        pyinstaller --onefile --name ${{ matrix.output-name }} --add-data "SimHei.ttf;." watermark.py
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
