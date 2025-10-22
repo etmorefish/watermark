@@ -25,11 +25,22 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python (Windows workaround)
+      if: matrix.os == 'windows-latest'
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.x'  
+        architecture: ${{ matrix.architecture }}
+
+    - name: Set up Python (macOS)
+      if: matrix.os == 'macos-latest'
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         architecture: ${{ matrix.architecture }}
+
+    - name: Verify Python version
+      run: python --version
 
     - name: Install dependencies
       run: |
