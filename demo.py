@@ -574,5 +574,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = WatermarkProApp(root)
     # 固定窗口大小以保持画布布局稳定（可根据需要移除）
-    root.resizable(False, False)
+    # root.resizable(False, False)
     root.mainloop()
