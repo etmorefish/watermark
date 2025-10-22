@@ -1,0 +1,52 @@
+name: Build Executables
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        include:
+          - os: macos-latest
+            python-version: '3.11'
+            architecture: arm64
+            output-name: remove_watermark_macos
+          - os: windows-latest
+            python-version: '3.11'
+            architecture: amd64
+            output-name: remove_watermark_windows
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: ${{ matrix.architecture }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build executable
+      run: |
+        if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          pyinstaller --onefile --name ${{ matrix.output-name }} --add-data "SimHei.ttf:." watermark.py
+        else
+          pyinstaller --onefile --name ${{ matrix.output-name }} --add-data "SimHei.ttf;." watermark.py
+        fi
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.output-name }}
+        path: dist/${{ matrix.output-name }}*

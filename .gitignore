@@ -1,0 +1,11 @@
+__pycache__/**
+venv/**
+.vscode/**
+**/*.pyc
+**/*.log
+**/*.log.*
+scratch/
+.idea
+*.db
+venv/**
+.venv/**
